@@ -31,7 +31,13 @@ public class AudioCapture {
     public func startSession(bufferSize: UInt32, sampleRate: Double, cb: @escaping (FlutterStandardTypedData?, Double, Error?) -> Void) throws {
         let inputNode = audioEngine.inputNode
         let inputFormat  = inputNode.inputFormat(forBus: 0)
-        
+         NSLog("startSession!")
+         if(inputFormat.channelCount == 0){
+             NSLog("Not enough available inputs!")
+             try setup()
+             return
+         }
+
         inputNode.installTap(onBus: 0, bufferSize: bufferSize, format: inputFormat) { (buffer, _) in
             // Convert audio format from 44100Hz to passed sampleRate
             // https://medium.com/@prianka.kariat/changing-the-format-of-ios-avaudioengine-mic-input-c183459cab63
